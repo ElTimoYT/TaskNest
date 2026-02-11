@@ -1,5 +1,6 @@
 package com.eltimo.tasknest.services;
 
+import com.eltimo.tasknest.dto.TaskDTO;
 import com.eltimo.tasknest.dto.UserDTO;
 import com.eltimo.tasknest.entities.User;
 import com.eltimo.tasknest.repositories.UserRepository;
@@ -48,12 +49,24 @@ public class UserServiceImpl implements UserService{
     }
 
     private UserDTO convertirADTO(User user) {
-        return new UserDTO(
-                user.getId(),
-                user.getName(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getTasks()
-        );
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setUsername(user.getUsername());
+
+        if (user.getTasks() != null) {
+            userDTO.setTasks(user.getTasks().stream()
+                    .map(task -> new TaskDTO(
+                            task.getId(),
+                            task.getTitle(),
+                            task.getDescription(),
+                            task.getPriority(),
+                            task.getState(),
+                            task.getUser().getId()
+                    ))
+                    .toList());
+        }
+        return userDTO;
     }
 }

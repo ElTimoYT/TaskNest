@@ -12,12 +12,12 @@ public class UserDTO {
     private String name;
     private String username;
     private String email;
-    private List<Task> tasks;
+    private List<TaskDTO> tasks;
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String name, String username, String email, List<Task> tasks) {
+    public UserDTO(Long id, String name, String username, String email, List<TaskDTO> tasks) {
         this.id = id;
         this.name = name;
         this.username = username;
@@ -57,11 +57,11 @@ public class UserDTO {
         this.email = email;
     }
 
-    public List<Task> getTasks() {
+    public List<TaskDTO> getTasks() {
         return tasks;
     }
 
-    public void setTasks(List<Task> tasks) {
+    public void setTasks(List<TaskDTO> tasks) {
         this.tasks = tasks;
     }
 }

@@ -2,12 +2,13 @@ package com.eltimo.tasknest.entities;
 
 import com.eltimo.tasknest.enums.Priority;
 import com.eltimo.tasknest.enums.TaskState;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tasks")
-@JsonPropertyOrder({"id", "title", "description", "state", "priority"})
+@JsonPropertyOrder({"id", "title", "description", "state", "priority", "user"})
 public class Task {
 
     @Id
@@ -30,6 +31,7 @@ public class Task {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     User user;
 
     public String getDescription() {
