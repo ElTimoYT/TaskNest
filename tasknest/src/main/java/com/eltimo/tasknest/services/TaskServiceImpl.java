@@ -2,7 +2,9 @@ package com.eltimo.tasknest.services;
 
 import com.eltimo.tasknest.dto.TaskDTO;
 import com.eltimo.tasknest.entities.Task;
+import com.eltimo.tasknest.entities.User;
 import com.eltimo.tasknest.repositories.TaskRepository;
+import com.eltimo.tasknest.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,10 +14,12 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final TaskRepository taskRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public TaskServiceImpl(TaskRepository taskRepository) {
+    public TaskServiceImpl(TaskRepository taskRepository, UserRepository userRepository) {
         this.taskRepository = taskRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -33,7 +37,17 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTO save(Task task) {
+    public TaskDTO save(TaskDTO taskDTO) {
+        Task task = new Task();
+        task.setTitle(taskDTO.getTitle());
+        task.setDescription(taskDTO.getDescription());
+        task.setPriority(taskDTO.getPriority());
+        task.setState(taskDTO.getTaskState());
+
+        User user = userRepository.findById(taskDTO.getUserId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + taskDTO.getUserId()));
+        task.setUser(user);
+
         Task taskToSave = taskRepository.save(task);
         return convertirADTO(taskToSave);
     }

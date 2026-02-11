@@ -30,8 +30,8 @@ public class TaskController {
     }
 
     @PostMapping("/tasks")
-    public TaskDTO save(Task task) {
-        return taskService.save(task);
+    public TaskDTO save(@RequestBody TaskDTO taskDTO) {
+        return taskService.save(taskDTO);
     }
 
     @DeleteMapping("/tasks/{id}")
