@@ -1,6 +1,9 @@
 package com.eltimo.tasknest.dto;
 
+import com.eltimo.tasknest.entities.Task;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import java.util.List;
 
 @JsonPropertyOrder({"id", "name", "username", "email"})
 public class UserDTO {
@@ -9,15 +12,17 @@ public class UserDTO {
     private String name;
     private String username;
     private String email;
+    private List<Task> tasks;
 
     public UserDTO() {
     }
 
-    public UserDTO(Long id, String name, String username, String email) {
+    public UserDTO(Long id, String name, String username, String email, List<Task> tasks) {
         this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
+        this.tasks = tasks;
     }
 
     public Long getId() {
@@ -50,5 +55,13 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Task> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<Task> tasks) {
+        this.tasks = tasks;
     }
 }

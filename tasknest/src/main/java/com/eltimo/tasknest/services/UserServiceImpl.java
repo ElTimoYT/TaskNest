@@ -47,12 +47,13 @@ public class UserServiceImpl implements UserService{
         userRepository.delete(user);
     }
 
-    private UserDTO convertirADTO(User usuario) {
+    private UserDTO convertirADTO(User user) {
         return new UserDTO(
-                usuario.getId(),
-                usuario.getUsername(),
-                usuario.getName(),
-                usuario.getEmail()
+                user.getId(),
+                user.getName(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getTasks()
         );
     }
 }

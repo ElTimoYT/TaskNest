@@ -1,13 +1,17 @@
 package com.eltimo.tasknest.entities;
 
+import com.eltimo.tasknest.enums.Priority;
 import com.eltimo.tasknest.enums.TaskState;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "tasks")
+@JsonPropertyOrder({"id", "title", "description", "state", "priority"})
 public class Task {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -19,6 +23,14 @@ public class Task {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TaskState state;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Priority priority;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    User user;
 
     public String getDescription() {
         return description;
@@ -43,6 +55,15 @@ public class Task {
     public void setTitle(String title) {
         this.title = title;
     }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
 
     public TaskState getState() {
         return state;
