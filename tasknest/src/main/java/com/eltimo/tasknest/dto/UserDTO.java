@@ -11,6 +11,7 @@ import java.util.List;
 @JsonPropertyOrder({"id", "name", "username", "email"})
 public class UserDTO {
 
+
     private Long id;
     private String name;
     private String username;
