@@ -6,6 +6,8 @@ import com.eltimo.tasknest.entities.User;
 import com.eltimo.tasknest.repositories.TaskRepository;
 import com.eltimo.tasknest.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,11 +25,10 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> findAll() {
-        List<Task> task = taskRepository.findAll();
-        return task.stream()
-                .map(this::convertirADTO)
-                .toList();
+    public Page<TaskDTO> findAll(Pageable pageable) {
+        return taskRepository
+                .findAll(pageable)
+                .map(this::convertirADTO);
     }
 
     @Override

@@ -3,12 +3,16 @@ package com.eltimo.tasknest.services;
 import com.eltimo.tasknest.dto.UserDTO;
 import com.eltimo.tasknest.entities.User;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Optional;
+
 
 public interface UserService {
-    List<UserDTO> findAll();
+    Page<UserDTO> findAll(Pageable pageable);
     UserDTO findById(@NotNull Long id);
     UserDTO save(User user);
+    Optional<UserDTO> update(Long id, UserDTO userDTO);
     void deleteById(Long id);
 }

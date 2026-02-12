@@ -1,12 +1,12 @@
 package com.eltimo.tasknest.services;
 
 import com.eltimo.tasknest.dto.TaskDTO;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface TaskService {
 
-    List<TaskDTO> findAll();
+    Page<TaskDTO> findAll(Pageable pageable);
     TaskDTO findById(Long id);
     TaskDTO save(TaskDTO task);
     void deleteById(Long id);

@@ -5,9 +5,12 @@ import com.eltimo.tasknest.dto.UserDTO;
 import com.eltimo.tasknest.entities.User;
 import com.eltimo.tasknest.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -20,27 +23,46 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<UserDTO> findAll() {
-        List<User> users = userRepository.findAll();
-
-        return users.stream()
-                .map(this::convertirADTO)
-                .toList();
+    @Transactional(readOnly = true)
+    public Page<UserDTO> findAll(Pageable pageable) {
+        return userRepository
+                .findAll(pageable)
+                .map(this::convertirADTO);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserDTO findById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
         return convertirADTO(user);
     }
 
     @Override
+    @Transactional
     public UserDTO save(User user) {
         User userToSave = userRepository.save(user);
         return convertirADTO(userToSave);
     }
 
     @Override
+    @Transactional
+    public Optional<UserDTO> update(Long id, UserDTO userDTO) {
+        Optional<User> userDTOOptional = userRepository.findById(id);
+        if (userDTOOptional.isPresent()) {
+            User userToUpdate = userDTOOptional.get();
+            userToUpdate.setName(userDTO.getName());
+            userToUpdate.setEmail(userDTO.getEmail());
+            userToUpdate.setUsername(userDTO.getUsername());
+
+            User updatedUser = userRepository.save(userToUpdate);
+            return Optional.of(convertirADTO(updatedUser));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
+    @Transactional
     public void deleteById(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
         userRepository.delete(user);
