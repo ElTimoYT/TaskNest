@@ -14,9 +14,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
+
+import static com.eltimo.tasknest.utils.ValidationUtils.validation;
 
 @RestController
 @RequestMapping("/api/users")
@@ -82,9 +82,5 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "The user was not found by id: " + id));
     }
 
-    private ResponseEntity<?> validation(BindingResult result) {
-        Map<String, String> errors = new HashMap<>();
-        result.getFieldErrors().forEach(err -> errors.put(err.getField(), "The field " + err.getField() + " " + err.getDefaultMessage()));
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
-    }
+
 }

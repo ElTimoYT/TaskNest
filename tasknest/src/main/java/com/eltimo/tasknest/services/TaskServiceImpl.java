@@ -9,8 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -25,6 +26,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<TaskDTO> findAll(Pageable pageable) {
         return taskRepository
                 .findAll(pageable)
@@ -32,36 +34,54 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TaskDTO findById(Long id) {
         Task task = taskRepository.findById(id).orElse(null);
         return convertirADTO(task);
     }
 
     @Override
+    @Transactional
     public TaskDTO save(TaskDTO taskDTO) {
-        Task task;
-
-        if (taskDTO.getId() != null) {
-            task = taskRepository.findById(taskDTO.getId())
-                    .orElseThrow(() -> new RuntimeException("Tarea no encontrada con id: " + taskDTO.getId()));
-        } else {
-            task = new Task();
-        }
-
-        task.setTitle(taskDTO.getTitle());
-        task.setDescription(taskDTO.getDescription());
-        task.setPriority(taskDTO.getPriority());
-        task.setState(taskDTO.getTaskState());
-
         User user = userRepository.findById(taskDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + taskDTO.getUserId()));
-        task.setUser(user);
 
-        Task taskToSave = taskRepository.save(task);
-        return convertirADTO(taskToSave);
+        Task taskToSave = new Task();
+        taskToSave.setTitle(taskDTO.getTitle());
+        taskToSave.setDescription(taskDTO.getDescription());
+        taskToSave.setPriority(taskDTO.getPriority());
+        taskToSave.setState(taskDTO.getTaskState());
+        taskToSave.setUser(user);
+
+        Task savedTask = taskRepository.save(taskToSave);
+        return convertirADTO(savedTask);
     }
 
     @Override
+    @Transactional
+    public Optional<TaskDTO> update(Long id, TaskDTO taskDTO) {
+        Optional<Task> taskOptional = taskRepository.findById(id);
+        if (taskOptional.isPresent()) {
+            Task taskToUpdate = taskOptional.get();
+            taskToUpdate.setTitle(taskDTO.getTitle());
+            taskToUpdate.setDescription(taskDTO.getDescription());
+            taskToUpdate.setPriority(taskDTO.getPriority());
+            taskToUpdate.setState(taskDTO.getTaskState());
+
+            User user = userRepository.findById(taskDTO.getUserId())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + taskDTO.getUserId()));
+            taskToUpdate.setUser(user);
+
+            Task updatedTask = taskRepository.save(taskToUpdate);
+            return Optional.of(convertirADTO(updatedTask));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+
+    @Override
+    @Transactional
     public void deleteById(Long id) {
         Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
         taskRepository.delete(task);
