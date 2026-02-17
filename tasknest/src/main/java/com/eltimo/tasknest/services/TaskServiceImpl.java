@@ -27,7 +27,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<TaskDTO> findAll(Pageable pageable) {
+    public Page<?> findAll(Pageable pageable) {
         return taskRepository
                 .findAll(pageable)
                 .map(this::convertirADTO);
@@ -38,6 +38,13 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO findById(Long id) {
         Task task = taskRepository.findById(id).orElse(null);
         return convertirADTO(task);
+    }
+
+    @Override
+    public Page<?> findByUserId(Long userId, Pageable pageable) {
+        return taskRepository
+                .findByUserId(userId, pageable)
+                .map(this::convertirADTO);
     }
 
     @Override

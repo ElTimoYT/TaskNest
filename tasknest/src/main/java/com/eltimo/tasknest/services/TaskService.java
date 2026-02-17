@@ -8,8 +8,9 @@ import java.util.Optional;
 
 public interface TaskService {
 
-    Page<TaskDTO> findAll(Pageable pageable);
+    Page<?> findAll(Pageable pageable);
     TaskDTO findById(Long id);
+    Page<?> findByUserId(Long userId, Pageable pageable);
     TaskDTO save(TaskDTO task);
     Optional<TaskDTO> update(Long id, TaskDTO taskDTO);
     void deleteById(Long id);
