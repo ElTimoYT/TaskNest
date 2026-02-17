@@ -5,7 +5,6 @@ import com.eltimo.tasknest.entities.User;
 import com.eltimo.tasknest.services.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -38,8 +37,13 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id) {
+    public ResponseEntity<?> findById(@PathVariable Long id, @AuthenticationPrincipal User user) {
         Optional<TaskDTO> taskDTO = Optional.ofNullable(taskService.findById(id));
+
+        if (!taskDTO.get().getUserId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to save this task");
+        }
+
         if(taskDTO.isPresent()) {
             return ResponseEntity.ok(taskDTO.orElseThrow());
         }
@@ -65,13 +69,28 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", result.getFieldError().getDefaultMessage()));
         }
 
-        taskDTO.setUserId(user.getId());
+        if (taskDTO.getId() != null) {
+            TaskDTO existingTask = taskService.findById(taskDTO.getId());
+            if (existingTask != null && !existingTask.getUserId().equals(user.getId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes editar tareas de otros.");
+            }
+        }
 
+        taskDTO.setUserId(user.getId());
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.save(taskDTO));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteById(@PathVariable Long id, @AuthenticationPrincipal User user) {
+
+        TaskDTO taskDTO = taskService.findById(id);
+        if (taskDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "The task was not found by id: " + id));
+        }
+        if (!taskDTO.getUserId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to delete this task");
+        }
+
         taskService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
