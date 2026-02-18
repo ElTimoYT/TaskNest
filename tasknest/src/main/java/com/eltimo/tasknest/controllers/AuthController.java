@@ -4,6 +4,7 @@ import com.eltimo.tasknest.dto.auth.AuthenticationRequest;
 import com.eltimo.tasknest.dto.auth.AuthenticationResponse;
 import com.eltimo.tasknest.dto.auth.RegisterRequest;
 import com.eltimo.tasknest.services.AuthenticationService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@SecurityRequirement(name = "bearerAuth")
 public class AuthController {
 
     private final AuthenticationService authenticationService;

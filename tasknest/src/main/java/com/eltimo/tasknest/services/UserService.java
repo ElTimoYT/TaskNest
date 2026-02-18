@@ -15,4 +15,6 @@ public interface UserService {
     UserDTO save(User user);
     Optional<UserDTO> update(Long id, UserDTO userDTO);
     void deleteById(Long id);
+    UserDTO updateProfile(User currentUser, UserDTO changes);
+    UserDTO convertirADTO(User user); // Asegúrate de que este sea público en la interfaz
 }

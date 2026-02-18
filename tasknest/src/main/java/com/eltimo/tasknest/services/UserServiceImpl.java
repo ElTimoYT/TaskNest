@@ -2,6 +2,7 @@ package com.eltimo.tasknest.services;
 
 import com.eltimo.tasknest.dto.TaskDTO;
 import com.eltimo.tasknest.dto.UserDTO;
+import com.eltimo.tasknest.entities.Tag;
 import com.eltimo.tasknest.entities.User;
 import com.eltimo.tasknest.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -45,6 +47,28 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public UserDTO updateProfile(User currentUser, UserDTO changes) {
+        // 1. Solo actualizamos campos permitidos
+        if (changes.getName() != null) {
+            currentUser.setName(changes.getName());
+        }
+
+        if (changes.getEmail() != null) {
+            currentUser.setEmail(changes.getEmail());
+        }
+
+        if (changes.getUsername() != null) {
+            currentUser.setUsername(changes.getUsername());
+        }
+
+        currentUser.setNotificationsEnabled(changes.isNotificationEnabled());
+
+        User savedUser = userRepository.save(currentUser);
+
+        return convertirADTO(savedUser);
+    }
+
+    @Override
     @Transactional
     public Optional<UserDTO> update(Long id, UserDTO userDTO) {
         Optional<User> userDTOOptional = userRepository.findById(id);
@@ -70,7 +94,7 @@ public class UserServiceImpl implements UserService{
 
 
 
-    private UserDTO convertirADTO(User user) {
+    public UserDTO convertirADTO(User user) {
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
@@ -80,12 +104,15 @@ public class UserServiceImpl implements UserService{
         if (user.getTasks() != null) {
             userDTO.setTasks(user.getTasks().stream()
                     .map(task -> new TaskDTO(
-                            task.getId(),
+                            task.getUuid(),
                             task.getTitle(),
                             task.getDescription(),
+                            task.getNotes(),
                             task.getPriority(),
                             task.getState(),
-                            task.getUser().getId()
+                            task.getUser().getId(),
+                            task.getDueDate(),
+                            task.getTags().stream().map(Tag::getName).collect(Collectors.toSet())
                     ))
                     .toList());
         }

@@ -2,7 +2,11 @@ package com.eltimo.tasknest.controllers;
 
 import com.eltimo.tasknest.dto.TaskDTO;
 import com.eltimo.tasknest.entities.User;
+import com.eltimo.tasknest.enums.Priority;
+import com.eltimo.tasknest.enums.TaskState;
 import com.eltimo.tasknest.services.TaskService;
+import com.eltimo.tasknest.services.WorkloadService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,13 +25,16 @@ import static com.eltimo.tasknest.utils.ValidationUtils.validation;
 
 @RestController
 @RequestMapping("/api/tasks")
+@SecurityRequirement(name = "bearerAuth")
 public class TaskController {
 
     private final TaskService taskService;
+    private final WorkloadService workloadService;
 
     @Autowired
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, WorkloadService workloadService) {
         this.taskService = taskService;
+        this.workloadService = workloadService;
     }
 
     @GetMapping("/page/{page}")
@@ -36,28 +43,35 @@ public class TaskController {
         return ResponseEntity.ok(taskService.findAll(pageable));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable Long id, @AuthenticationPrincipal User user) {
-        Optional<TaskDTO> taskDTO = Optional.ofNullable(taskService.findById(id));
-
-        if (!taskDTO.get().getUserId().equals(user.getId())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to save this task");
-        }
-
-        if(taskDTO.isPresent()) {
-            return ResponseEntity.ok(taskDTO.orElseThrow());
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "The task was not found by id: " + id));
-    }
-
     @GetMapping("/my-tasks")
-    public ResponseEntity<?> findMyTasks(@AuthenticationPrincipal User user, @PageableDefault Pageable pageable) {
-        return ResponseEntity.ok(taskService.findByUserId(user.getId(), pageable));
+    public ResponseEntity<?> findMyTasks(
+            @RequestParam(required = false) TaskState state,     // ?state=PENDING
+            @RequestParam(required = false) Priority priority,   // ?priority=HIGH
+            @RequestParam(required = false, defaultValue = "false") boolean dueSoon, // ?dueSoon=true
+            @PageableDefault(size = 10, page = 0, sort = "dueDate") Pageable pageable,
+            @AuthenticationPrincipal User user) {
+
+        return ResponseEntity.ok(
+                taskService.findMyTasks(user.getId(), state, priority, dueSoon, pageable)
+        );
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> findByUserId(@PathVariable Long userId, @PageableDefault Pageable pageable) {
         return ResponseEntity.ok(taskService.findByUserId(userId, pageable));
+    }
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<?> findByUuid(
+            @PathVariable String uuid,
+            @AuthenticationPrincipal User user
+    ) {
+        TaskDTO task = taskService.findByUuid(uuid);
+
+        if (!task.getUserId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You do not have permission to view this task");
+        }
+        return ResponseEntity.ok(task);
     }
 
     @PostMapping()
@@ -69,8 +83,8 @@ public class TaskController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonMap("error", result.getFieldError().getDefaultMessage()));
         }
 
-        if (taskDTO.getId() != null) {
-            TaskDTO existingTask = taskService.findById(taskDTO.getId());
+        if (taskDTO.getUuid() != null) {
+            TaskDTO existingTask = taskService.findByUuid(taskDTO.getUuid());
             if (existingTask != null && !existingTask.getUserId().equals(user.getId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes editar tareas de otros.");
             }
@@ -93,6 +107,26 @@ public class TaskController {
 
         taskService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{uuid}") // Recibe UUID string
+    public ResponseEntity<?> deleteByUuid(
+            @PathVariable String uuid,
+            @AuthenticationPrincipal User user
+    ) {
+        TaskDTO task = taskService.findByUuid(uuid); // Buscamos primero para validar
+
+        if (!task.getUserId().equals(user.getId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes borrar esto");
+        }
+
+        taskService.deleteByUuid(uuid);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/workload")
+    public ResponseEntity<?> getWorkload(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(workloadService.calculateWorkload(user));
     }
 
 }

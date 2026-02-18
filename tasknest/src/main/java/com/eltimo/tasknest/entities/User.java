@@ -22,24 +22,22 @@ import java.util.stream.Collectors;
 @JsonPropertyOrder({"id", "name", "username", "email", "password"})
 @Getter
 @Setter
-public class User implements UserDetails {
+public class User extends AuditableEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+    @Column(unique = false, nullable = false)
     private String name;
 
-    @NotBlank
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @NotEmpty
-    @Email
+    @Column(unique = true)
     private String email;
 
-    @NotBlank
-    @Size(min = 8)
+    @Column(nullable = false)
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -50,6 +48,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
+
+    @Column(nullable = false)
+    private boolean notificationsEnabled = true;
 
     public User() {
         tasks = new ArrayList<>();
