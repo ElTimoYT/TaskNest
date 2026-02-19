@@ -1,0 +1,49 @@
+<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+  
+  <mat-card class="w-full max-w-md p-6 shadow-xl rounded-2xl">
+    
+    <mat-card-header class="flex flex-col items-center mb-6">
+      <div class="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">
+        TN
+      </div>
+      <mat-card-title class="text-2xl font-bold text-gray-800">Bienvenido a TaskNest</mat-card-title>
+      <mat-card-subtitle class="text-gray-500 mt-2">Gestiona tus tareas con calma</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngIf="errorMessage()" class="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm text-center">
+        {{ errorMessage() }}
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+        
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com">
+          <mat-error *ngIf="loginForm.controls.email.hasError('required')">El email es obligatorio</mat-error>
+          <mat-error *ngIf="loginForm.controls.email.hasError('email')">Formato inválido</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" formControlName="password">
+          <mat-error *ngIf="loginForm.controls.password.hasError('required')">La contraseña es obligatoria</mat-error>
+        </mat-form-field>
+
+        <button mat-flat-button color="primary" type="submit" class="w-full h-12 text-lg" [disabled]="loginForm.invalid || isLoading()">
+          <span *ngIf="!isLoading()">Entrar</span>
+          <mat-spinner *ngIf="isLoading()" diameter="24" color="accent"></mat-spinner>
+        </button>
+
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions class="flex justify-center mt-4">
+      <p class="text-sm text-gray-600">
+        ¿No tienes cuenta? <a routerLink="/register" class="text-indigo-600 font-semibold hover:underline">Regístrate aquí</a>
+      </p>
+    </mat-card-actions>
+
+  </mat-card>
+
+</div>

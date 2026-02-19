@@ -36,16 +36,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         final String authHeader = request.getHeader(HEADER_AUTHORIZATION);
+        System.out.println("1. Cabecera recibida: " + authHeader); // 👈 CHIVATO 1
         final String jwt;
         final String userEmail;
 
         if (authHeader == null || !authHeader.startsWith(PREFIX_TOKEN)) {
+            System.out.println("2. No hay cabecera o no empieza por Bearer. Ignorando token."); // 👈 CHIVATO 2
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
         userEmail = jwtService.extractUsername(jwt);
+        System.out.println("3. Token extraído. Email del usuario: " + userEmail); // 👈 CHIVATO 3
 
         if(userEmail == null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
@@ -56,7 +59,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                         userDetails.getAuthorities()
                 );
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                System.out.println("4. Token VÁLIDO. Dando acceso a Spring Security."); // 👈 CHIVATO 4
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+            }else {
+                System.out.println("5. EL TOKEN NO ES VÁLIDO"); // 👈 CHIVATO 5
             }
         }
         filterChain.doFilter(request, response);
