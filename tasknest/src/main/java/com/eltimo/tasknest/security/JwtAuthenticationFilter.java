@@ -46,24 +46,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        jwt = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(jwt);
-        System.out.println("3. Token extraído. Email del usuario: " + userEmail); // 👈 CHIVATO 3
+        try {
+            jwt = authHeader.substring(7);
+            userEmail = jwtService.extractUsername(jwt);
+            System.out.println("3. Token extraído. Email del usuario: " + userEmail); // 👈 CHIVATO 3
 
-        if(userEmail == null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                System.out.println("4. Token VÁLIDO. Dando acceso a Spring Security."); // 👈 CHIVATO 4
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }else {
-                System.out.println("5. EL TOKEN NO ES VÁLIDO"); // 👈 CHIVATO 5
+            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null,
+                            userDetails.getAuthorities()
+                    );
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    System.out.println("4. Token VÁLIDO. Dando acceso a Spring Security."); // 👈 CHIVATO 4
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                } else {
+                    System.out.println("5. EL TOKEN NO ES VÁLIDO"); // 👈 CHIVATO 5
+                }
             }
+        }catch (Exception e) {
+            System.out.println("Token inválido o expirado. Se ignora la cabecera.");
         }
         filterChain.doFilter(request, response);
 

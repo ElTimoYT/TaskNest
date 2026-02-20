@@ -2,6 +2,8 @@ package com.eltimo.tasknest.dto;
 
 import com.eltimo.tasknest.enums.Priority;
 import com.eltimo.tasknest.enums.TaskState;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -25,11 +27,15 @@ public class TaskDTO {
     private String description;
     private String notes;
     private Priority priority;
+
+    @JsonProperty("state")
     private TaskState taskState;
+
     private Long userId;
     private Set<String> tags;
 
     @FutureOrPresent(message = "Due date must be in the present or future")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dueDate;
 
     public TaskDTO() {

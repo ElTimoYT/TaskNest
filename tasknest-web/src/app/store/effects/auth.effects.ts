@@ -19,7 +19,11 @@ export class AuthEffects {
                     // Si sale bien -> Despacha Success
                     map((response) => AuthActions.loginSuccess({ response })),
                     // Si sale mal -> Despacha Failure con el mensaje
-                    catchError((error) => of(AuthActions.loginFailure({ error: error.error.message || 'Error desconocido' })))
+                    catchError((error) => {
+                      // ⚠️ MIRA ESTA LÍNEA (El error.error?.message es la clave)
+                      const errorMsg = error.error?.message || 'Usuario no encontrado o contraseña incorrecta';
+                      return of(AuthActions.loginFailure({ error: errorMsg }));
+                  })
                 )
             )
         )

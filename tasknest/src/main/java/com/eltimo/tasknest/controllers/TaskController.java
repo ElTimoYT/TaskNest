@@ -89,11 +89,17 @@ public class TaskController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No puedes editar tareas de otros.");
             }
         }
-
+        boolean isNew = taskDTO.getUuid() == null || taskDTO.getUuid().isEmpty();
         taskDTO.setUserId(user.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(taskService.save(taskDTO));
-    }
+        TaskDTO savedTask = taskService.save(taskDTO);
 
+        if (isNew) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedTask); // 201
+        } else {
+            return ResponseEntity.ok(savedTask); // 200
+        }
+    }
+/*
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Long id, @AuthenticationPrincipal User user) {
 
@@ -107,7 +113,7 @@ public class TaskController {
 
         taskService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
     @DeleteMapping("/{uuid}") // Recibe UUID string
     public ResponseEntity<?> deleteByUuid(

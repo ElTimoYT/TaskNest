@@ -89,56 +89,50 @@ public class TaskServiceImpl implements TaskService {
     public TaskDTO save(TaskDTO taskDTO) {
         Task task;
 
-        // Lógica de Edición vs Creación basada en UUID
+        // 1. Lógica de Edición vs Creación
         if (taskDTO.getUuid() != null && !taskDTO.getUuid().isEmpty()) {
-            // EDICIÓN: Buscamos por UUID
             task = taskRepository.findByUuid(taskDTO.getUuid())
                     .orElseThrow(() -> new RuntimeException("Tarea no encontrada"));
         } else {
-            // CREACIÓN: Nueva instancia (el UUID se genera solo en @PrePersist de la entidad)
             task = new Task();
         }
 
-        // Mapeo de campos
-        task.setTitle(taskDTO.getTitle());
-        task.setDescription(taskDTO.getDescription());
-        task.setState(taskDTO.getTaskState());
-        task.setPriority(taskDTO.getPriority());
-        task.setDueDate(taskDTO.getDueDate());
-        task.setNotes(taskDTO.getNotes());
-
-        // --- LÓGICA DE ETIQUETAS ---
-        if (taskDTO.getTags() != null) {
-            Set<Tag> taskTags = new HashSet<>();
-
-            // Obtenemos el usuario (ya lo tenías buscado arriba para task.setUser(user))
-            User user = task.getUser();
-
-            for (String tagName : taskDTO.getTags()) {
-                // Limpiamos el texto (trim y mayúsculas/minúsculas opcional)
-                String cleanName = tagName.trim();
-
-                // Buscamos si el usuario ya tiene esta etiqueta
-                Tag tag = tagRepository.findByNameAndUserId(cleanName, user.getId())
-                        .orElseGet(() -> {
-                            // Si no existe, la CREAMOS
-                            Tag newTag = new Tag();
-                            newTag.setName(cleanName);
-                            newTag.setColor("#3F51B5"); // Color por defecto (Azul índigo)
-                            newTag.setUser(user);
-                            return tagRepository.save(newTag);
-                        });
-
-                taskTags.add(tag);
-            }
-            task.setTags(taskTags);
-        }
-
-        // Asignar usuario (esto sigue igual, usando el ID interno del user)
+        // 2. ASIGNAR USUARIO PRIMERO (Vital para que las etiquetas no den NullPointerException)
         User user = userRepository.findById(taskDTO.getUserId())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         task.setUser(user);
 
+        // 3. MAPEO A PRUEBA DE BALAS (Si viene null, ponemos texto vacío o valor por defecto)
+        task.setTitle(taskDTO.getTitle());
+        task.setDescription(taskDTO.getDescription() != null ? taskDTO.getDescription() : ""); // 🛡️ Evita nulos
+        task.setNotes(taskDTO.getNotes() != null ? taskDTO.getNotes() : "");                   // 🛡️ Evita nulos
+        task.setState(taskDTO.getTaskState() != null ? taskDTO.getTaskState() : TaskState.TODO); // 🛡️ Por defecto PENDING
+        task.setPriority(taskDTO.getPriority() != null ? taskDTO.getPriority() : Priority.MEDIUM);
+        task.setDueDate(taskDTO.getDueDate());
+
+        // 4. LÓGICA DE ETIQUETAS
+        if (taskDTO.getTags() != null) {
+
+            // 1. Vaciamos la colección "mágica" de Hibernate en lugar de aplastarla
+            task.getTags().clear();
+
+            for (String tagName : taskDTO.getTags()) {
+                String cleanName = tagName.trim();
+                Tag tag = tagRepository.findByNameAndUserId(cleanName, user.getId())
+                        .orElseGet(() -> {
+                            Tag newTag = new Tag();
+                            newTag.setName(cleanName);
+                            newTag.setColor("#3F51B5");
+                            newTag.setUser(user);
+                            return tagRepository.save(newTag);
+                        });
+
+                // 2. Vamos añadiendo las etiquetas una a una a la colección de Hibernate
+                task.getTags().add(tag);
+            }
+        }
+
+        // 5. GUARDAR Y DEVOLVER
         return convertirADTO(taskRepository.save(task));
     }
 

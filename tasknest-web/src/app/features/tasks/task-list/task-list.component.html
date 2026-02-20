@@ -1,0 +1,173 @@
+<div class="p-6 md:p-8 max-w-7xl mx-auto transition-colors duration-300">
+  
+  <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-6 transition-colors duration-300">
+    <div>
+      <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Mis Tareas</h1>
+      <p class="text-gray-500 dark:text-slate-300">Organiza tu flujo de trabajo</p>
+    </div>
+    
+    <div class="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+      <div class="relative w-full sm:w-64">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-300">search</mat-icon>
+        <input type="text" 
+               placeholder="Buscar tareas..." 
+               (input)="onSearch($event)"
+               class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-slate-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-400 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent shadow-sm transition-all">
+      </div>
+
+      <button mat-flat-button color="primary" class="!rounded-xl !px-6 !py-6 text-base shadow-md w-full sm:w-auto" (click)="openNewTaskDialog()">
+        <mat-icon class="mr-1">add_task</mat-icon>
+        Nueva Tarea
+      </button>
+    </div>
+  </div>
+
+  <mat-tab-group (selectedTabChange)="onTabChange($event)" color="primary" class="mb-8">
+    
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="font-semibold text-slate-700 dark:text-slate-300 transition-colors">Todas</span>
+      </ng-template>
+    </mat-tab>
+    
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="font-semibold text-slate-700 dark:text-slate-300 transition-colors">Por Hacer (To-Do)</span>
+      </ng-template>
+    </mat-tab>
+    
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span class="font-semibold text-slate-700 dark:text-slate-300 transition-colors">Completadas</span>
+      </ng-template>
+    </mat-tab>
+    
+  </mat-tab-group>
+
+  <div *ngIf="isLoading()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <mat-card *ngFor="let i of [1,2,3,4,5,6]" class="!rounded-2xl border border-gray-100 dark:border-slate-700 dark:bg-slate-800 animate-pulse shadow-sm">
+      
+      <mat-card-header class="!pt-5 !px-5 !pb-2">
+        <div class="w-full">
+          <div class="h-6 bg-gray-200 dark:bg-slate-700 rounded-md w-3/4 mb-3"></div>
+          <div class="flex gap-3 mt-2">
+            <div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-16"></div>
+            <div class="h-5 bg-gray-200 dark:bg-slate-700 rounded w-20"></div>
+          </div>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content class="!px-5 !py-3 mt-2">
+        <div class="space-y-2 mb-4">
+          <div class="h-3 bg-gray-200 dark:bg-slate-700 rounded w-full"></div>
+          <div class="h-3 bg-gray-200 dark:bg-slate-700 rounded w-5/6"></div>
+          <div class="h-3 bg-gray-200 dark:bg-slate-700 rounded w-4/6"></div>
+        </div>
+        
+        <div class="flex gap-2 mb-4 mt-4">
+          <div class="h-6 bg-gray-200 dark:bg-slate-700 rounded-md w-12"></div>
+          <div class="h-6 bg-gray-200 dark:bg-slate-700 rounded-md w-16"></div>
+        </div>
+        
+        <div class="flex items-center gap-2 mt-4">
+          <div class="h-4 w-4 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+          <div class="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24"></div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="!px-3 !pb-3 !pt-0 mt-2 flex justify-end gap-2 border-t border-gray-100 dark:border-slate-700/50 pt-3">
+        <div class="h-8 w-8 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+        <div class="h-8 w-8 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+        <div class="h-8 w-8 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+
+  <div *ngIf="errorMessage()" class="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 p-4 rounded-xl border border-red-200 dark:border-red-800 mb-6 flex items-center gap-3">
+    <mat-icon>error_outline</mat-icon>
+    {{ errorMessage() }}
+  </div>
+
+  <div *ngIf="!isLoading() && filteredTasks().length > 0" 
+       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+       
+    <mat-card *ngFor="let task of filteredTasks()" 
+              class="!rounded-2xl transition-all duration-300 border border-gray-100 dark:bg-slate-800"
+              [ngClass]="{
+                'shadow-md shadow-rose-500/30 hover:shadow-lg hover:shadow-rose-500/50 hover:-translate-y-1 dark:border-rose-500/40 dark:shadow-rose-500/10': task.priority === 'HIGH' && task.state !== 'DONE',
+                'shadow-md shadow-amber-500/30 hover:shadow-lg hover:shadow-amber-500/50 hover:-translate-y-1 dark:border-amber-500/40 dark:shadow-amber-500/10': task.priority === 'MEDIUM' && task.state !== 'DONE',
+                'shadow-md shadow-emerald-500/30 hover:shadow-lg hover:shadow-emerald-500/50 hover:-translate-y-1 dark:border-emerald-500/40 dark:shadow-emerald-500/10': task.priority === 'LOW' && task.state !== 'DONE',
+                'shadow-sm opacity-60 bg-gray-50 dark:bg-slate-900/50 dark:border-slate-300': task.state === 'DONE',
+                'dark:border-slate-700': task.state !== 'DONE' && !task.priority
+              }">
+      
+      <mat-card-header class="!pt-5 !px-5 !pb-2">
+        <mat-card-title class="!text-xl !font-bold !text-gray-800 dark:!text-white line-clamp-1 mb-1" 
+                        [class.line-through]="task.state === 'DONE'">
+          {{ task.title }}
+        </mat-card-title>
+        
+        <mat-card-subtitle class="flex items-center gap-3 mt-2">
+          <span class="text-[10px] font-bold tracking-wider px-2 py-1 rounded uppercase bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-slate-200"
+                [ngClass]="{'!bg-green-100 !text-green-700 dark:!bg-green-900/40 dark:!text-green-300': task.state === 'DONE'}">
+            {{ task.state }}
+          </span>
+          
+          <span *ngIf="task.state !== 'DONE'" 
+                class="text-[11px] font-bold tracking-wider uppercase flex items-center gap-1"
+                [ngClass]="{
+                  'text-rose-500 dark:text-rose-400': task.priority === 'HIGH',
+                  'text-amber-500 dark:text-amber-400': task.priority === 'MEDIUM',
+                  'text-emerald-500 dark:text-emerald-400': task.priority === 'LOW'
+                }">
+            <mat-icon class="!text-[14px] !h-[14px] !w-[14px]">flag</mat-icon>
+            {{ task.priority }}
+          </span>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content class="!px-5 !py-3">
+        <p class="text-gray-600 dark:text-slate-300 text-sm mb-4 line-clamp-3 min-h-[3.5rem] leading-relaxed transition-colors">
+          {{ task.description || 'Sin descripción detallada...' }}
+        </p>
+
+        <mat-chip-set *ngIf="task.tags && task.tags.length > 0" class="mb-3">
+          <mat-chip *ngFor="let tag of task.tags" 
+                    class="!bg-indigo-50 dark:!bg-indigo-900/40 !text-indigo-700 dark:!text-indigo-200 !font-medium !text-xs !min-h-[24px]">
+            #{{ tag }}
+          </mat-chip>
+        </mat-chip-set>
+        
+        <div class="flex items-center text-sm text-gray-500 dark:text-slate-400 mt-4 font-medium transition-colors">
+          <mat-icon class="!text-[18px] !h-[18px] !w-[18px] mr-1 text-gray-400 dark:text-slate-500">calendar_today</mat-icon>
+          <span [class.line-through]="task.state === 'DONE'">{{ task.dueDate }}</span>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions class="!px-3 !pb-3 !pt-0 mt-2 flex justify-end">
+        <button *ngIf="task.state !== 'DONE'" mat-icon-button class="text-indigo-600 dark:text-indigo-400" 
+                (click)="markAsCompleted(task)" matTooltip="Completar Tarea">
+          <mat-icon>check_circle_outline</mat-icon>
+        </button>
+
+        <button *ngIf="task.state !== 'DONE'" mat-icon-button class="text-amber-600 dark:text-amber-400" 
+                (click)="openEditTaskDialog(task)" matTooltip="Editar">
+          <mat-icon>edit_note</mat-icon>
+        </button>
+        
+        <button mat-icon-button class="text-rose-600 dark:text-rose-400" 
+                (click)="deleteTask(task.uuid)" matTooltip="Eliminar">
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+  
+  <div *ngIf="!isLoading() && filteredTasks().length === 0 && tasks().length > 0" 
+       class="flex flex-col items-center justify-center bg-white dark:bg-slate-800 rounded-3xl border border-dashed border-gray-300 dark:border-slate-600 py-16 mt-8 transition-colors">
+    <mat-icon class="!text-6xl !h-16 !w-16 text-gray-300 dark:text-slate-600 mb-4">task</mat-icon>
+    <h2 class="text-xl font-bold text-gray-700 dark:text-white">Nada por aquí</h2>
+    <p class="text-gray-500 dark:text-slate-400 mt-2">No hay tareas que coincidan con este estado.</p>
+  </div>
+
+</div>

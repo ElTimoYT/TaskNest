@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { DashboardService } from "../../core/services/dashboard.service";
 import { DashboardActions } from "../actions/dashboard.actions";
 import { mergeMap, map, catchError, of } from "rxjs";
+import { TaskActions } from "../actions/task.actions";
 
 @Injectable()
 export class DashboardEffects {
@@ -19,6 +20,19 @@ export class DashboardEffects {
           catchError(error => of(DashboardActions.loadDashboardFailure({ error: error.message })))
         )
       )
+    )
+  );
+
+  refreshDashboard$ = createEffect(() =>
+    this.actions$.pipe(
+      // Si ocurre CUALQUIERA de estas tres acciones de éxito...
+      ofType(
+        TaskActions.createTaskSuccess,
+        TaskActions.updateTaskSuccess,
+        TaskActions.deleteTaskSuccess
+      ),
+      // ... disparamos la orden de recargar el Dashboard en segundo plano
+      map(() => DashboardActions.loadDashboard())
     )
   );
 }

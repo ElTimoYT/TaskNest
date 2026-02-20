@@ -1,0 +1,65 @@
+<div class="p-6 relative">
+  <button mat-icon-button (click)="onCancel()" class="absolute top-2 right-2 text-gray-400 hover:text-gray-600">
+    ✕
+  </button>
+  
+  <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+    {{ data?.task ? '✏️ Editar Tarea' : '✨ Nueva Tarea' }}
+  </h2>
+
+  <form [formGroup]="taskForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+    
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>¿Qué tienes que hacer?</mat-label>
+      <input matInput formControlName="title" placeholder="Ej: Terminar informe mensual">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Detalles adicionales</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Añade notas o pasos específicos..."></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Etiquetas (Pulsa Enter para añadir)</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Selecciona etiquetas">
+        <mat-chip-row *ngFor="let tag of tags" (removed)="removeTag(tag)">
+          {{tag}}
+          <button matChipRemove [attr.aria-label]="'Borrar ' + tag">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        
+        <input placeholder="Añadir nueva etiqueta..."
+               [matChipInputFor]="chipGrid"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               [matChipInputAddOnBlur]="true" 
+               (matChipInputTokenEnd)="addTag($event)"
+               (keydown.enter)="$event.preventDefault()"/>
+      </mat-chip-grid>
+    </mat-form-field>
+
+    <div class="grid grid-cols-2 gap-4">
+      <mat-form-field appearance="outline">
+        <mat-label>Fecha Límite</mat-label>
+        <input matInput type="date" formControlName="dueDate">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Prioridad</mat-label>
+        <mat-select formControlName="priority">
+          <mat-option value="LOW">🟢 Baja</mat-option>
+          <mat-option value="MEDIUM">🟡 Media</mat-option>
+          <mat-option value="HIGH">🔴 Alta</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="flex justify-end gap-3 mt-4">
+      <button mat-stroked-button type="button" (click)="onCancel()">Cancelar</button>
+      <button mat-flat-button color="primary" type="submit" [disabled]="taskForm.invalid">
+        {{ data?.task ? 'Guardar cambios' : 'Crear Tarea' }}
+      </button>
+    </div>
+    
+  </form>
+</div>

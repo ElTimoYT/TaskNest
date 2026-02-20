@@ -34,7 +34,7 @@ public class Task extends AuditableEntity{
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
+    @Column(columnDefinition = "TEXT")
     private String notes;
 
     private LocalDate dueDate;
