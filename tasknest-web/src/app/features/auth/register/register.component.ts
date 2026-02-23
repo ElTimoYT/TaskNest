@@ -9,11 +9,12 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-register',
   imports: [CommonModule, ReactiveFormsModule, MatInputModule, 
-            MatButtonModule, MatCardModule, MatProgressSpinnerModule, RouterLink],
+            MatButtonModule, MatCardModule, MatProgressSpinnerModule, RouterLink, MatIconModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
 })

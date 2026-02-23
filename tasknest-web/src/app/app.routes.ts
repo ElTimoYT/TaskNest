@@ -6,9 +6,10 @@ import { TaskListComponent } from './features/tasks/task-list/task-list.componen
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
 import { authGuard } from './core/guards/auth.guard';
 import { ProfileComponent } from './features/settings/profile/profile.component';
+import { HomeComponent } from './features/public/home/home.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'login', pathMatch: 'full' }, // Si entras a la raíz, te lleva al login
+    { path: '', component: HomeComponent }, // Si entras a la raíz, te lleva al login
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent }, 
    { 

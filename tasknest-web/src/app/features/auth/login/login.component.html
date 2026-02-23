@@ -1,49 +1,286 @@
-<div class="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-  
-  <mat-card class="w-full max-w-md p-6 shadow-xl rounded-2xl">
+<div class="auth-wrapper">
+  <!-- Ambient background effects -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="grid-overlay"></div>
+
+  <mat-card class="auth-card">
     
-    <mat-card-header class="flex flex-col items-center mb-6">
-      <div class="w-16 h-16 bg-indigo-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-4">
-        TN
+    <!-- Header -->
+    <mat-card-header class="auth-header">
+      <div class="brand-icon">
+        <mat-icon>task_alt</mat-icon>
       </div>
-      <mat-card-title class="text-2xl font-bold text-gray-800">Bienvenido a TaskNest</mat-card-title>
-      <mat-card-subtitle class="text-gray-500 mt-2">Gestiona tus tareas con calma</mat-card-subtitle>
+      <mat-card-title class="auth-title">Bienvenido de nuevo</mat-card-title>
+      <mat-card-subtitle class="auth-subtitle">Gestiona tus tareas con calma</mat-card-subtitle>
     </mat-card-header>
 
-    <mat-card-content>
-      <div *ngIf="errorMessage()" class="bg-red-50 text-red-600 p-3 rounded-md mb-4 text-sm text-center">
-        {{ errorMessage() }}
+    <!-- Content -->
+    <mat-card-content class="auth-content">
+
+      <div *ngIf="errorMessage()" class="error-alert">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ errorMessage() }}</span>
       </div>
 
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-        
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput type="email" formControlName="email" placeholder="ejemplo@correo.com">
-          <mat-error *ngIf="loginForm.controls.email.hasError('required')">El email es obligatorio</mat-error>
-          <mat-error *ngIf="loginForm.controls.email.hasError('email')">Formato inválido</mat-error>
-        </mat-form-field>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="auth-form">
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Contraseña</mat-label>
-          <input matInput type="password" formControlName="password">
-          <mat-error *ngIf="loginForm.controls.password.hasError('required')">La contraseña es obligatoria</mat-error>
-        </mat-form-field>
+        <div class="field-group">
+          <label class="field-label">Correo Electrónico</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">mail_outline</mat-icon>
+            <input
+              type="email"
+              formControlName="email"
+              placeholder="ejemplo@correo.com"
+              class="auth-input"
+            />
+          </div>
+        </div>
 
-        <button mat-flat-button color="primary" type="submit" class="w-full h-12 text-lg" [disabled]="loginForm.invalid || isLoading()">
-          <span *ngIf="!isLoading()">Entrar</span>
-          <mat-spinner *ngIf="isLoading()" diameter="24" color="accent"></mat-spinner>
+        <div class="field-group">
+          <label class="field-label">Contraseña</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">lock_outline</mat-icon>
+            <input
+              type="password"
+              formControlName="password"
+              placeholder="••••••••"
+              class="auth-input"
+            />
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="loginForm.invalid || isLoading()"
+          class="submit-btn"
+        >
+          <span *ngIf="!isLoading()">Entrar a TaskNest</span>
+          <mat-spinner *ngIf="isLoading()" diameter="22"></mat-spinner>
         </button>
 
       </form>
     </mat-card-content>
 
-    <mat-card-actions class="flex justify-center mt-4">
-      <p class="text-sm text-gray-600">
-        ¿No tienes cuenta? <a routerLink="/register" class="text-indigo-600 font-semibold hover:underline">Regístrate aquí</a>
-      </p>
+    <mat-card-actions class="auth-footer">
+      <p>¿No tienes cuenta? <a routerLink="/register">Regístrate aquí</a></p>
     </mat-card-actions>
 
   </mat-card>
-
 </div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+  :host {
+    display: block;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  /* ── Layout ── */
+  .auth-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #090b13;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Ambient orbs ── */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    animation: pulse 8s ease-in-out infinite alternate;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    top: -120px; left: -100px;
+    background: radial-gradient(circle, rgba(99,102,241,0.18) 0%, transparent 70%);
+  }
+  .orb-2 {
+    width: 400px; height: 400px;
+    bottom: -80px; right: -80px;
+    background: radial-gradient(circle, rgba(168,85,247,0.15) 0%, transparent 70%);
+    animation-delay: 3s;
+  }
+  @keyframes pulse {
+    from { opacity: 0.6; transform: scale(1); }
+    to   { opacity: 1;   transform: scale(1.08); }
+  }
+
+  /* Grid overlay */
+  .grid-overlay {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+  }
+
+  /* ── Card ── */
+  .auth-card {
+    position: relative; z-index: 10;
+    width: 100%; max-width: 440px;
+    background: rgba(14, 17, 30, 0.85) !important;
+    border: 1px solid rgba(255,255,255,0.07) !important;
+    border-radius: 24px !important;
+    padding: 2.5rem !important;
+    box-shadow:
+      0 0 0 1px rgba(99,102,241,0.08),
+      0 32px 80px rgba(0,0,0,0.6),
+      inset 0 1px 0 rgba(255,255,255,0.06) !important;
+    backdrop-filter: blur(24px);
+    overflow: visible !important;
+  }
+
+  /* ── Header ── */
+  .auth-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 !important;
+    margin-bottom: 2rem;
+  }
+  .brand-icon {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, #6366f1, #a855f7);
+    border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 32px rgba(99,102,241,0.4);
+    margin-bottom: 1.25rem;
+  }
+  .brand-icon mat-icon {
+    color: #fff;
+    font-size: 30px !important;
+    width: 30px !important; height: 30px !important;
+  }
+  .auth-title {
+    font-family: 'Syne', sans-serif !important;
+    font-size: 1.75rem !important;
+    font-weight: 800 !important;
+    color: #f1f5f9 !important;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem !important;
+    text-align: center;
+  }
+  .auth-subtitle {
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.9rem !important;
+    color: #94a3b8 !important;
+    margin: 0 !important;
+    text-align: center;
+  }
+
+  /* ── Form ── */
+  .auth-content { padding: 0 !important; }
+  .auth-form { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .field-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #94a3b8;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-left: 2px;
+  }
+
+  .input-wrapper { position: relative; display: flex; align-items: center; }
+
+  .input-icon {
+    position: absolute;
+    left: 14px;
+    color: #64748b;
+    font-size: 20px !important;
+    width: 20px !important; height: 20px !important;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .auth-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.85rem 1rem 0.85rem 2.75rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+    color: #f1f5f9;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  .auth-input::placeholder { color: #475569; }
+  .auth-input:focus {
+    border-color: rgba(99,102,241,0.6);
+    background: rgba(99,102,241,0.06);
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+  }
+
+  /* ── Submit button ── */
+  .submit-btn {
+    margin-top: 0.5rem;
+    width: 100%; height: 50px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 0.5rem;
+    letter-spacing: 0.01em;
+    box-shadow: 0 4px 24px rgba(99,102,241,0.35);
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+  }
+  .submit-btn:hover:not(:disabled) {
+    opacity: 0.92;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 32px rgba(99,102,241,0.45);
+  }
+  .submit-btn:active:not(:disabled) { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ── Error alert ── */
+  .error-alert {
+    display: flex; align-items: center; gap: 0.5rem;
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.25);
+    color: #fca5a5;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+  }
+  .error-alert mat-icon { font-size: 18px !important; width: 18px !important; height: 18px !important; }
+
+  /* ── Footer ── */
+  .auth-footer {
+    display: flex; justify-content: center;
+    margin-top: 1.75rem !important;
+    padding: 0 !important;
+  }
+  .auth-footer p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+  }
+  .auth-footer a {
+    color: #818cf8;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .auth-footer a:hover { color: #a5b4fc; text-decoration: underline; }
+</style>

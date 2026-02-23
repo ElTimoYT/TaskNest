@@ -4,12 +4,14 @@ import { FormBuilder, ReactiveFormsModule, Validators, AbstractControl, Validati
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, MatProgressSpinnerModule],
-  templateUrl: './profile.component.html'
+  imports: [CommonModule, ReactiveFormsModule, MatSnackBarModule, MatProgressSpinnerModule, MatIconModule],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
   private fb = inject(FormBuilder);

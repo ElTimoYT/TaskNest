@@ -1,0 +1,114 @@
+<div class="relative w-full overflow-x-hidden min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900 via-slate-900 to-black font-sans text-slate-300 selection:bg-indigo-500/30">
+  
+  <header class="absolute top-0 left-0 w-full z-50 px-6 lg:px-12 py-6 flex justify-between items-center box-border" data-aos="fade-down" data-aos-duration="1200">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 bg-gradient-to-tr from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.5)]">
+        <mat-icon class="text-white !h-6 !w-6 !text-[24px]">task_alt</mat-icon>
+      </div>
+      <span class="text-2xl font-extrabold text-white tracking-tight hidden sm:block">TaskNest</span>
+    </div>
+    
+    <div class="flex items-center gap-4">
+      <a routerLink="/login" class="text-sm font-bold text-slate-300 hover:text-white transition-colors">Iniciar Sesión</a>
+      <a routerLink="/register" class="px-5 py-2.5 rounded-full text-sm font-bold text-white bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-md transition-all">Empezar gratis</a>
+    </div>
+  </header>
+
+  <main class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 px-6 flex flex-col items-center justify-center text-center z-10">
+    
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] md:w-[800px] md:h-[800px] bg-indigo-500/20 rounded-full blur-[100px] md:blur-[120px] pointer-events-none -z-10"></div>
+    
+    <div data-aos="fade-up" data-aos-delay="100" class="mb-8 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/10 border border-indigo-500/20 backdrop-blur-md">
+      <span class="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse"></span>
+      <span class="text-[10px] md:text-xs font-bold text-indigo-300 tracking-wide uppercase">La nueva forma de organizarse</span>
+    </div>
+
+    <h1 data-aos="fade-up" data-aos-delay="200" class="text-5xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight max-w-4xl mb-6">
+      Organiza tu vida, <br>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">sin perder la calma.</span>
+    </h1>
+
+    <p data-aos="fade-up" data-aos-delay="300" class="text-lg lg:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed px-4">
+      TaskNest es el gestor de tareas diseñado para profesionales que buscan velocidad, belleza y eficiencia en un solo lugar.
+    </p>
+
+    <div data-aos="fade-up" data-aos-delay="400" class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4">
+      <div class="relative group">
+        <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-2xl blur opacity-75 group-hover:opacity-100 transition duration-300"></div>
+        <a routerLink="/register" class="relative flex items-center justify-center gap-2 px-8 py-4 bg-slate-900 border border-slate-700 rounded-2xl text-white font-bold text-lg hover:bg-slate-800 transition-all">
+          Empieza ahora <mat-icon class="!h-5 !w-5 text-[20px]">arrow_forward</mat-icon>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <section class="relative py-24 px-6 max-w-7xl mx-auto z-10">
+    <div class="text-center mb-16" data-aos="fade-up">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-4">Todo bajo control</h2>
+      <p class="text-slate-400 text-lg">Un vistazo a lo que puedes hacer con TaskNest.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <div data-aos="fade-up" data-aos-delay="100" class="md:col-span-2 p-8 rounded-[2rem] bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 backdrop-blur-md relative overflow-hidden group">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl group-hover:bg-indigo-500/20 transition-all duration-500"></div>
+        <h3 class="text-2xl font-bold text-white mb-2">Dashboard Inteligente</h3>
+        <p class="text-slate-400 mb-8 max-w-md">Mide tu progreso en tiempo real. Observa cómo sube tu porcentaje de productividad con cada tarea que tachas de tu lista.</p>
+        
+        <div class="bg-slate-900/50 border border-slate-700 rounded-xl p-5 shadow-2xl transform group-hover:-translate-y-2 transition-transform duration-500">
+          <div class="flex justify-between items-end mb-2">
+            <span class="text-sm font-medium text-slate-400">Progreso General</span>
+            <span class="text-xl font-bold text-indigo-400">75%</span>
+          </div>
+          <div class="w-full bg-slate-800 rounded-full h-3">
+            <div class="bg-gradient-to-r from-indigo-500 to-purple-500 h-3 rounded-full w-3/4 shadow-[0_0_10px_rgba(99,102,241,0.5)]"></div>
+          </div>
+        </div>
+      </div>
+
+      <div data-aos="fade-up" data-aos-delay="200" class="p-8 rounded-[2rem] bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 backdrop-blur-md flex flex-col justify-between group">
+        <div>
+          <h3 class="text-2xl font-bold text-white mb-2">Prioridades Claras</h3>
+          <p class="text-slate-400">Colores vivos para que sepas qué es urgente con un solo vistazo.</p>
+        </div>
+        <div class="flex flex-col gap-3 mt-8">
+          <div class="px-4 py-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold text-sm flex items-center gap-2 transform group-hover:translate-x-2 transition-transform"><mat-icon class="!h-4 !w-4 !text-[16px]">flag</mat-icon> ALTA PRIORIDAD</div>
+          <div class="px-4 py-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-sm flex items-center gap-2 transform group-hover:translate-x-2 transition-transform delay-75"><mat-icon class="!h-4 !w-4 !text-[16px]">flag</mat-icon> BAJA PRIORIDAD</div>
+        </div>
+      </div>
+
+      <div data-aos="fade-up" data-aos-delay="300" class="md:col-span-3 p-8 rounded-[2rem] bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700/50 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-8 group">
+        <div class="md:w-1/2">
+          <h3 class="text-2xl font-bold text-white mb-2">Encuentra todo en un segundo</h3>
+          <p class="text-slate-400">Un buscador reactivo que filtra tus tareas en milisegundos a medida que escribes.</p>
+        </div>
+        <div class="w-full md:w-1/2 relative transform group-hover:scale-[1.02] transition-transform duration-500">
+          <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-xl blur opacity-20"></div>
+          <div class="relative bg-slate-900 border border-slate-600 rounded-xl p-4 flex items-center gap-3">
+            <mat-icon class="text-slate-400">search</mat-icon>
+            <span class="text-slate-500 border-r border-slate-700 pr-3 animate-pulse">Lanzar|</span>
+            <span class="text-white text-sm">Lanzar aplicación a producción</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="relative py-24 z-10 border-t border-slate-800">
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-indigo-900/20 pointer-events-none"></div>
+    <div class="max-w-4xl mx-auto px-6 text-center" data-aos="zoom-in" data-aos-duration="1000">
+      <div class="h-20 w-20 bg-white rounded-3xl flex items-center justify-center shadow-2xl shadow-white/10 mx-auto mb-8 transform -rotate-6">
+        <mat-icon class="text-indigo-600 !h-10 !w-10 !text-[40px]">rocket_launch</mat-icon>
+      </div>
+      <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-6">¿Listo para disparar tu productividad?</h2>
+      <p class="text-xl text-slate-400 mb-10">Únete ahora y descubre por qué TaskNest es la herramienta definitiva para organizar tu día a día.</p>
+      
+      <a routerLink="/register" class="inline-flex items-center justify-center gap-2 px-10 py-5 bg-white rounded-2xl text-indigo-900 font-extrabold text-lg hover:bg-slate-100 hover:scale-105 transition-all shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+        Crear cuenta gratis ahora
+      </a>
+      <p class="mt-6 text-sm text-slate-500">No requiere tarjeta de crédito • Configuración en 1 minuto</p>
+    </div>
+  </section>
+
+</div>

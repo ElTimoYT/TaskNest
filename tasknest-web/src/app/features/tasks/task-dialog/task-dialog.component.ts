@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -14,7 +14,8 @@ import { Task } from '../../../core/models/task.model';
   selector: 'app-task-dialog',
   imports: [CommonModule, ReactiveFormsModule, MatDialogModule, MatInputModule, MatButtonModule, MatSelectModule, MatIconModule, MatChipsModule],
   templateUrl: './task-dialog.component.html',
-  styleUrl: './task-dialog.component.scss'
+  styleUrl: './task-dialog.component.scss',
+  encapsulation: ViewEncapsulation.None
 })
 export class TaskDialogComponent implements OnInit{
 

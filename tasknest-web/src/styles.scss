@@ -1,4 +1,5 @@
 @import '@angular/material/prebuilt-themes/azure-blue.css';
+@import 'aos/dist/aos.css';
 
 @tailwind base;
 @tailwind components;
@@ -8,3 +9,124 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.dark body,
+.dark {
+  color-scheme: dark;
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: 1.25rem !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+}
+
+.cdk-overlay-pane {
+  max-width: 95vw !important;
+}
+
+.task-dialog-panel {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    border-radius: 1.25rem !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+.cdk-overlay-pane.task-dialog-panel {
+  max-width: 95vw !important;
+}
+
+.cdk-overlay-pane .mdc-dialog__surface {
+  border-radius: 1.25rem !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+// Dark mode para el dialog
+html.dark .task-dialog-panel .mdc-dialog__surface {
+  background: #1e293b !important;
+}
+
+html.dark .task-dialog-panel {
+  // Wrapper
+  .dialog-header { background: #1e293b; }
+  .dialog-title { color: #f1f5f9; }
+  .dialog-title-icon { color: #818cf8; }
+  .close-btn { color: #64748b !important; }
+  .close-btn:hover { color: #e2e8f0 !important; background: #334155 !important; }
+  .dialog-divider { background: #334155; }
+
+  // Form
+  .dialog-form { background: #1e293b; }
+  .field-label { color: #cbd5e1; }
+  .section-title { color: #e2e8f0; }
+
+  // Mat form fields
+  .mat-mdc-text-field-wrapper { background: #1f273a !important; }
+  .mdc-notched-outline__leading,
+  .mdc-notched-outline__notch,
+  .mdc-notched-outline__trailing { border-color: #475569 !important; }
+  input, textarea { color: #f1f5f9 !important; }
+  .mat-mdc-floating-label { color: #64748b !important; }
+
+  // Chips
+  .mat-mdc-chip {
+    background-color: #1e1b4b !important;
+    color: #a5b4fc !important;
+  }
+
+  // Buttons
+  .cancel-btn {
+    color: #94a3b8 !important;
+    border-color: #475569 !important;
+    &:hover { background: #334155 !important; }
+  }
+
+  .mat-mdc-select-value-text,
+  .mat-mdc-select-placeholder {
+    color: #f1f5f9 !important;
+  }
+
+  // Por si acaso también el trigger
+  .mat-mdc-select-trigger {
+    color: #f1f5f9 !important;
+  }
+}
+
+html.dark .mat-mdc-select-panel {
+  background: #1e293b !important;
+
+  .mat-mdc-option {
+    color: #f1f5f9 !important;
+
+    &:hover,
+    &.mat-mdc-option-active {
+      background: #334155 !important;
+    }
+
+    &.mdc-list-item--selected {
+      background: #312e81 !important;
+      color: #a5b4fc !important;
+    }
+  }
+}
+
+/* ==========================================================================
+   FIX: Autocompletado Oscuro en Navegadores (Chrome, Edge, Safari)
+   ========================================================================== */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    /* 1. Forzamos que el texto sea blanco siempre */
+    -webkit-text-fill-color: white !important;
+    
+    /* 2. Engañamos al navegador retrasando su fondo blanco 5000 segundos */
+    transition: background-color 5000s ease-in-out 0s !important;
+    
+    /* 3. (Opcional) Si la transición falla en algún navegador raro, forzamos un color oscuro con sombra interior */
+    -webkit-box-shadow: 0 0 0px 1000px rgba(255,255,255,0.04) inset !important; 
+    
+    /* Respetamos la tipografía */
+    font-family: inherit !important;
+}

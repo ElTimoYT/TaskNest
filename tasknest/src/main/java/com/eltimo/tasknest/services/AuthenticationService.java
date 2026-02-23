@@ -12,6 +12,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 @Service
@@ -38,6 +40,11 @@ public class AuthenticationService {
         user.setRoles(Set.of(Role.USER));
 
         userRepository.save(user);
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("name", user.getName());
+        claims.put("email", user.getEmail());
+        claims.put("username", user.getUsername());
 
         String jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);

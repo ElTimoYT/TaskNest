@@ -9,6 +9,7 @@ import { Store } from '@ngrx/store';
 import { AuthActions } from '../../../store/actions/auth.actions';
 import { RouterLink } from '@angular/router';
 import { selectAuthLoading, selectAuthError } from '../../../store/selectors/auth.selectors';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ import { selectAuthLoading, selectAuthError } from '../../../store/selectors/aut
     MatButtonModule, 
     MatCardModule,
     MatProgressSpinnerModule,
-    RouterLink
+    RouterLink,
+    MatIconModule
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'

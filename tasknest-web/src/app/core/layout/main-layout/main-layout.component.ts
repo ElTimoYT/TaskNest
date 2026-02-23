@@ -16,6 +16,7 @@ export class MainLayoutComponent implements OnInit{
 
   userInitials: string = 'US';
   usernameDisplay: string = '';
+  userMenu: string = '';
   isDarkMode = signal<boolean>(false);
 
   ngOnInit() {
@@ -50,33 +51,47 @@ export class MainLayoutComponent implements OnInit{
     }
   }
 
-  extractUserInitials() {
+  private getTokenPayload() {
     const token = localStorage.getItem('token');
     if (token) {
       try {
         // Descodificamos la carga útil (payload) del JWT de forma segura
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const username = payload.sub || payload.email || 'User';
-        
-        // Cogemos las dos primeras letras y las ponemos en mayúsculas (ej: admin@... -> AD)
-        this.userInitials = username.substring(0, 2).toUpperCase();
+        return JSON.parse(atob(token.split('.')[1]));
       } catch (e) {
         console.error('Error leyendo el token', e);
+        return null;
       }
+    }
+    return null;
+  }
+
+  extractUserInitials() {
+    const payload = this.getTokenPayload();
+    if (payload) {
+      const username = payload.sub || payload.name || 'User';
+      // Cogemos las dos primeras letras y las ponemos en mayúsculas (ej: admin@... -> AD)
+      this.userInitials = username.substring(0, 2).toUpperCase();
     }
   }
 
   extractUsername() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      try {
-        // Descodificamos la carga útil (payload) del JWT de forma segura
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        const username = payload.sub || payload.email || 'User';
-        this.usernameDisplay = username;
-      } catch (e) {
-        console.error('Error leyendo el token', e);
-      }
+    const payload = this.getTokenPayload();
+    if (payload) {
+      const username = payload.sub || payload.username || 'User';
+      const email = payload.sub || payload.email || '';
+      const user = username.split('@')[0]; // Si es un email, solo mostramos la parte antes de '@'
+
+      this.usernameDisplay = email;
+      this.userMenu = user;
+    }
+  }
+
+  extractName(){
+    const payload = this.getTokenPayload();
+    if (payload) {
+      const name = payload.name || 'User';
+      
+      this.userMenu = name;
     }
   }
 
