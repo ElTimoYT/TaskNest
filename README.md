@@ -49,23 +49,6 @@
 
 ---
 
-## 📸 Capturas de Pantalla / Demo
-
-> *Próximamente — Añade aquí GIFs o imágenes de tu aplicación.*
->
-> Sugerencias:
-> 1. Un GIF de la Landing Page haciendo scroll.
-> 2. Una captura del Dashboard en Modo Oscuro.
-> 3. Un GIF completando una tarea (para que se vea el confeti y la notificación).
-
-```md
-![Demo Landing](./docs/landing.gif)
-![Dashboard Modo Oscuro](./docs/dashboard-dark.png)
-![Completar Tarea](./docs/complete-task.gif)
-```
-
----
-
 ## 🚀 Instalación y Despliegue
 
 ### Prerrequisitos
