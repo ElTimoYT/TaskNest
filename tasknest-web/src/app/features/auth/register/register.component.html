@@ -50,7 +50,15 @@
           <label class="field-label">Contraseña</label>
           <div class="input-wrapper">
             <mat-icon class="input-icon">lock_outline</mat-icon>
-            <input type="password" formControlName="password" placeholder="••••••••" class="auth-input" />
+            <input
+              [type]="hidePassword() ? 'password' : 'text'"
+              formControlName="password"
+              placeholder="••••••••"
+              class="auth-input password-input" 
+            />
+            <button type="button" class="toggle-password-btn" (click)="hidePassword.set(!hidePassword())">
+              <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
           </div>
         </div>
 
@@ -252,4 +260,39 @@
     text-decoration: none; transition: color 0.2s;
   }
   .auth-footer a:hover { color: #c4b5fd; text-decoration: underline; }
+
+  /* ── Password Toggle Button ── */
+  .password-input {
+    padding-right: 2.75rem !important; /* Espacio extra a la derecha para el botón */
+  }
+
+  .toggle-password-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: color 0.2s, background 0.2s;
+    outline: none;
+  }
+
+  .toggle-password-btn:hover {
+    color: #f1f5f9;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .toggle-password-btn mat-icon {
+    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+  }
 </style>

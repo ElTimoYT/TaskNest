@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import { selectAuthError, selectAuthLoading } from '../../../store/selectors/auth.selectors';
@@ -22,6 +22,7 @@ export class RegisterComponent {
 
   private fb = inject(FormBuilder);
   private store = inject(Store);
+  hidePassword = signal(true);
 
   registerForm = this.fb.nonNullable.group({
     name: ['', [Validators.required, Validators.minLength(3)]],

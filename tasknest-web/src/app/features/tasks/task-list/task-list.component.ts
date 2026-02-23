@@ -88,13 +88,14 @@ export class TaskListComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) this.store.dispatch(TaskActions.createTask({ task: result }));
-    });
-
-    this.toast.show(
+      this.toast.show(
       '¡Tarea Creada!', 
       `Has creado la nueva tarea.`, 
       'success'
     );
+    });
+
+    
   }
 
   openEditTaskDialog(task: Task) {
